@@ -1,0 +1,17 @@
+kafka_home: "/etc/installers/kafka"
+kafka:
+  home: "{{ kafka_home }}"
+  version: 2.5.0
+  scala_version: 2.13
+  data_dir: "{{ kafka_home }}/data"
+  log_dir: "{{ kafka_home }}/logs"
+  hosts_file: "/etc/hosts"
+  force_install: "no" # yes
+  delete.topic.enable: "true"
+  auto.create.topics.enable: "false"
+  daemon:
+    name: "kafka"
+    type: "service" # systemctl
+    start_on_boot: "yes" # no
+  zookeeper:
+    chroot: kafka

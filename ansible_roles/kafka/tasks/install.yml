@@ -1,0 +1,43 @@
+---
+- name: Adding aliases to {{ kafka.hosts_file }}
+  lineinfile:
+    path: "{{ kafka.hosts_file }}"
+    create: true
+    line: "{{ hostvars[item].private_ip }} {{ hostvars[item].alias }}"
+  with_items: "{{ groups['kafka_hosts'] }}"
+
+- name: "Creates and change permissons to kafka home, data and log directories."
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0777"
+  with_items:
+    - "{{ kafka.home }}"
+    - "{{ kafka.data_dir }}"
+    - "{{ kafka.log_dir }}"
+
+- name: Download and extract kafka dist to {{ kafka.home }}
+  unarchive:
+    remote_src: yes
+    src: "https://downloads.apache.org/kafka/{{kafka.version}}/kafka_{{kafka.scala_version}}-{{kafka.version}}.tgz"
+    dest: "{{ kafka.home }}"
+    extra_opts: [--strip-components=1]
+
+# - name: Delete tar dist
+#   file:
+#     path: "{{ kafka.home }}/kafka_{{kafka.scala_version}}-{{kafka.version}}.tgz"
+#     state: absent
+
+- name: Backup default server.properties file to server.properties.bak
+  command: cp {{ kafka.home }}/config/server.properties {{ kafka.home }}/config/server.properties.bak
+
+- name: Creating server.properties
+  template: src=server.properties.j2 dest={{ kafka.home }}/config/server.properties
+  tags: deploy
+
+- include_tasks: daemon_service.yml
+  when: kafka.daemon.type == 'service'
+- include_tasks: daemon_systemctl.yml
+  when: kafka.daemon.type == 'systemctl'

@@ -1,0 +1,7 @@
+[local]
+localhost
+
+[zookeeper_hosts]
+zookeeper1 ansible_host=116.203.228.166 alias=zookeeper1 private_ip=116.203.228.166 zookeeper_id=1 client_port=2181
+zookeeper2 ansible_host=116.203.228.84 alias=zookeeper2 private_ip=116.203.228.84 zookeeper_id=2 client_port=2181
+zookeeper3 ansible_host=116.203.227.158 alias=zookeeper3 private_ip=116.203.227.158 zookeeper_id=3 client_port=2181

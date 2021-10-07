@@ -1,0 +1,20 @@
+---
+- name: Checking if {{ zookeeper.home }} exists.
+  stat:
+    path: "{{ zookeeper.home }}"
+  register: zk_home_dir_stats
+
+- debug:
+    msg: "{{ zookeeper.home }} already exists, zookeeper is already installed, skipping installation."
+  when: zk_home_dir_stats.stat.exists
+
+- find: paths="{{ zookeeper.home }}" file_type=directory
+  register: zk_home_find_stats
+
+- debug:
+    msg: "{{ zookeeper.home }} is not empty, zookeeper is already installed, skipping installation."
+  when: zk_home_find_stats.matched|int != 0
+
+- name: "Install only if {{ zookeeper.home }} doesn't exists or if it's empty. force_install: {{ zookeeper.force_install }}"
+  include_tasks: install.yml
+  when: zookeeper.force_install == 'yes' or not zk_home_dir_stats.stat.exists or zk_home_find_stats.matched|int == 0

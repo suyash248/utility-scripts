@@ -1,0 +1,18 @@
+---
+- name: 'Installing java 1.8'
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true
+  roles:
+    - role: ../../java 1.8
+      become: yes
+
+- hosts: zookeeper_hosts
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: ../../
+      become: yes
+      
+# ansible-playbook -i inventory --connection=local playbook.yml -K

@@ -1,0 +1,22 @@
+---
+- name: "Register daemon /etc/init.d/{{ kafka.daemon.name }}"
+  template: src=daemon_service.j2 dest=/etc/init.d/{{ kafka.daemon.name }}
+  tags: deploy
+
+- name: chown & chmod /etc/init.d/{{ kafka.daemon.name }}
+  file:
+    path: /etc/init.d/{{ kafka.daemon.name }}
+    state: file
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: "update-rc.d and systemctl damone reload"
+  command: "{{ item }}"
+  with_items:
+    - update-rc.d {{ kafka.daemon.name }} defaults
+    - systemctl daemon-reload
+
+- name: Start daemon /etc/init.d/{{ kafka.daemon.name }} if it's not running.
+  service: name="{{ kafka.daemon.name }}" state=started enabled="{{ kafka.daemon.start_on_boot }}"
+  tags: deploy

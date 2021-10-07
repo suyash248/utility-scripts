@@ -1,0 +1,22 @@
+---
+- name: "Register daemon /etc/init.d/{{ zookeeper.daemon.name }}"
+  template: src=daemon_service.j2 dest=/etc/init.d/{{ zookeeper.daemon.name }}
+  tags: deploy
+
+- name: chown & chmod /etc/init.d/{{ zookeeper.daemon.name }}
+  file:
+    path: /etc/init.d/{{ zookeeper.daemon.name }}
+    state: file
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: "update-rc.d and systemctl daemon reload"
+  command: "{{ item }}"
+  with_items:
+    - update-rc.d {{ zookeeper.daemon.name }} defaults
+    - systemctl daemon-reload
+
+- name: Start daemon /etc/init.d/{{ zookeeper.daemon.name }} if it's not running.
+  service: name="{{ zookeeper.daemon.name }}" state=started enabled=yes
+  tags: deploy

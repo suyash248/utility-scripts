@@ -1,0 +1,20 @@
+---
+- name: Checking if {{ kafka.home }} exists.
+  stat:
+    path: "{{ kafka.home }}"
+  register: kafka_home_dir_stats
+
+- debug:
+    msg: "{{ kafka.home }} already exists, kafka is already installed, skipping installation."
+  when: kafka_home_dir_stats.stat.exists
+
+- find: paths="{{ kafka.home }}" file_type=directory
+  register: kafka_home_find_stats
+
+- debug:
+    msg: "{{ kafka.home }} is not empty, kafka is already installed, skipping installation."
+  when: kafka_home_find_stats.matched|int != 0
+
+- name: "Install only if {{ kafka.home }} doesn't exists or if it's empty. force_install: {{ kafka.force_install }}"
+  include_tasks: install.yml
+  when: kafka.force_install == 'yes' or not kafka_home_dir_stats.stat.exists or kafka_home_find_stats.matched|int == 0

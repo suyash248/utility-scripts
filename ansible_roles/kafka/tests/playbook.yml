@@ -1,0 +1,28 @@
+---
+- name: 'Installing java 1.8'
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true
+  roles:
+    - role: ../../java 1.8
+      become: yes
+
+- name: 'Installing zookeeper'
+  hosts: zookeeper_hosts
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true
+  roles:
+      - role: ../../zKeeper
+        become: yes
+
+- hosts: kafka_hosts
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: ../../
+      become: yes
+    # become_user: suyash
+
+# ansible-playbook -i inventory --connection=local playbook.yml -K

@@ -1,0 +1,52 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          zookeeper
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Starts/Stops zookeeper
+### END INIT INFO
+
+DAEMON_NAME={{ zookeeper.daemon.name }}
+ZOOKEEPER_DIR={{ zookeeper.home }}
+
+PATH=$PATH:$ZOOKEEPER_DIR/bin
+
+# See how we were called.
+case "$1" in
+  start)
+        # Start daemon.
+        pid=`ps ax | grep -i 'org.apache.zookeeper' | grep -v grep | awk '{print $1}'`
+        if [ -n "$pid" ]
+          then
+            echo "Zookeeper is already running";
+        else
+          echo "Starting $DAEMON_NAME";
+          $ZOOKEEPER_DIR/bin/zkServer.sh --config $ZOOKEEPER_DIR/conf start
+        fi
+        ;;
+  stop)
+        echo "Shutting down $DAEMON_NAME";
+        $ZOOKEEPER_DIR/bin/zkServer.sh stop
+        ;;
+  restart)
+        $0 stop
+        sleep 2
+        $0 start
+        ;;
+  status)
+        pid=`ps ax | grep -i 'org.apache.zookeeper' | grep -v grep | awk '{print $1}'`
+        if [ -n "$pid" ]
+          then
+          echo "Zookeeper is Running as PID: $pid"
+        else
+          echo "Zookeeper is not Running"
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+
+exit 0

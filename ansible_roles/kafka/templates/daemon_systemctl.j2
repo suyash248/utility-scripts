@@ -1,0 +1,14 @@
+[Unit]
+Requires=zookeeper.service
+After=zookeeper.service
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory={{ kafka.home }}
+ExecStart={{ kafka.home }}/bin/kafka-server-start.sh -daemon {{ kafka.home }}/config/server.properties
+ExecStop={{ kafka.home }}/bin/kafka-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=default.target

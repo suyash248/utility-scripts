@@ -1,0 +1,20 @@
+---
+zookeeper_home: "/etc/installers/zookeeper"
+zookeeper:
+  home: "{{ zookeeper_home }}"
+  version: 3.6.1
+  scala_version: 2.13
+  config_file: "zoo.cfg"
+  data_dir: "{{ zookeeper_home }}/data/zookeeper"
+  log_dir: "{{ zookeeper_home }}/logs"
+  apt_cache_timeout: 3600
+  client_port: 2181
+  init_limit: 5
+  sync_limit: 2
+  tick_time: 2000
+  hosts_file: "/etc/hosts"
+  force_install: "no" # yes
+  daemon:
+    name: "zookeeper"
+    type: "service" # systemctl
+    start_on_boot: "yes" # no

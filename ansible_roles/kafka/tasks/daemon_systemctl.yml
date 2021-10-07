@@ -1,0 +1,26 @@
+---
+- name: "Register daemon /etc/systemd/system/{{ kafka.daemon.name }}"
+  template: src=daemon_systemctl.j2 dest=/etc/systemd/system/{{ kafka.daemon.name }}.service
+  tags: deploy
+
+- name: chown & chmod daemon /etc/systemd/system/{{ kafka.daemon.name }}
+  file:
+    path: /etc/systemd/system/{{ kafka.daemon.name }}.service
+    state: file
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: Reload, enable and start daemon
+  command: "{{ item }}"
+  with_items:
+    - systemctl daemon-reload
+    - systemctl enable {{ kafka.daemon.name }}
+    - systemctl start {{ kafka.daemon.name }}
+
+# - name: restart daemon /etc/systemd/system/{{ kafka.daemon.name }}, also issue daemon-reload to pick up config changes
+#   systemd:
+#     state: restarted
+#     daemon_reload: yes
+#     name: "{{ kafka.daemon.name }}"
+#     enabled: yes

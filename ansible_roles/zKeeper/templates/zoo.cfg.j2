@@ -1,0 +1,19 @@
+tickTime={{zookeeper.tick_time}}
+dataDir={{zookeeper.data_dir}}
+dataLogDir={{zookeeper.log_dir}}
+clientPort={{zookeeper.client_port}}
+initLimit={{zookeeper.init_limit}}
+syncLimit={{zookeeper.sync_limit}}
+4lw.commands.whitelist=*
+
+{% if 'zookeeper_hosts' in groups %}
+
+{% for host in groups.zookeeper_hosts %}
+server.{{ hostvars[host].zookeeper_id }}={{ hostvars[host].alias}}:2888:3888
+{% endfor %}
+
+{% else %}
+
+server.1=localhost:2888:3888
+
+{% endif %}
