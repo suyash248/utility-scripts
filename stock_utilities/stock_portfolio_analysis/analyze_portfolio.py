@@ -3,9 +3,9 @@ import json
 import pprint
 from typing import Dict, Any
 
-exported_holdings_filepath = 'static/holdings.csv'
-holdings_analysis_filepath = 'static/output/holdings_analysis.csv'
-sectors_analysis_filepath = 'static/output/sectors_analysis.csv'
+exported_holdings_filepath = '../../static/holdings.csv'
+holdings_analysis_filepath = '../../static/output/holdings_analysis.csv'
+sectors_analysis_filepath = '../../static/output/sectors_analysis.csv'
 
 class Constants(object):
     UNKNOWN = 'UNKNOWN'
@@ -91,7 +91,7 @@ class Holding(object):
         self.curr_val = ltp * quantity
         self.invested_val = avg_price * quantity
         self.pnl = self.curr_val - self.invested_val
-        self.pnl_percent = (self.pnl * 100) / self.invested_val
+        self.pnl_percent = 0.0 if self.invested_val == 0.0 else (self.pnl * 100) / self.invested_val
 
         self.expected_allocation_percent = 0.0  # TODO Input
         self.invested_allocation_percent = 0.0  # (investment_val/total_investment_val) * 100
