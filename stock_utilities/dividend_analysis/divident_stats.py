@@ -6,7 +6,7 @@ import traceback
 
 from xlrd.sheet import Cell, Sheet
 
-loc = '/home/suyash/Desktop/acc_stmt.xls'
+loc = input('Enter account statement file(xls) path: ')
 DATE_FORMAT = '%d/%m/%y'
 
 def parse_date(date_str):
