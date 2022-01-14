@@ -1,2 +1,1 @@
-/stock_utilities/stock_portfolio_analysis/static/*
-/stock_utilities/dividend_analysis/static/*
+*.xls;xlsx;csv
